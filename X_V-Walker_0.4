@@ -5,6 +5,7 @@
 // @description        タイムライン上の動画・静止画の暗転拡大表示
 // @author        X User
 // @match        https://x.com/*
+// @icon        https://www.google.com/s2/favicons?sz=64&domain=twitter.com
 // @grant        none
 // @updateURL        https://github.com/personwritep/X_V-Walker/raw/main/X_V-Walker.user.js
 // @downloadURL        https://github.com/personwritep/X_V-Walker/raw/main/X_V-Walker.user.js
