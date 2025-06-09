@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        X V-Walker
 // @namespace        http://tampermonkey.net/
-// @version        0.4
+// @version        0.5
 // @description        タイムライン上の動画・静止画の暗転拡大表示
 // @author        X User
 // @match        https://x.com/*
@@ -88,8 +88,10 @@ function set_img(target){
                     lightbox.classList.add('fin'); }
 
                 else{ // 投稿画像の場合
-                    let select=link.getAttribute('href').slice(-1);
-                    if(select=='o'){ select='1'; } // header-photo の場合
+                    let img_id=img_src.split('?')[0];
+                    if(link.href.includes('header_photo')){
+                        img_id=img_id.replace('/600x200', ''); } // ヘッダー画像の場合
+
                     link.click(); // ダイアログ読込み遅延が必要
 
                     let img_s;
@@ -99,10 +101,7 @@ function set_img(target){
                         retry++;
                         if(retry>100){ // リトライ制限 100回 1secまで
                             clearInterval(interval); }
-                        if(select=='1'){
-                            img_s=document.querySelector('div[role="dialog"] img'); }
-                        else{
-                            img_s=document.querySelector('div[role="dialog"] li:nth-child('+ select +') img'); }
+                        img_s=document.querySelector('div[role="dialog"] img[src^="'+ img_id +'"]');
                         if(img_s){
                             clearInterval(interval);
                             set_dialog(img_s); }}}}
