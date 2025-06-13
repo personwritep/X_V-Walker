@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        X V-Walker
 // @namespace        http://tampermonkey.net/
-// @version        0.6
+// @version        0.7
 // @description        タイムライン上の動画・静止画の暗転拡大表示
 // @author        X User
 // @match        https://x.com/*
@@ -49,6 +49,15 @@ document.addEventListener('mousedown', function(event){
 
         }} // if(disp_mode==0)
 
+}, true );
+
+
+
+document.addEventListener('keydown', function(event){
+    if(event.keyCode=='27'){ //「ESC」キーの押下
+        if(disp_mode>0){
+            event.preventDefault();
+            close_box(); }}
 }, true );
 
 
