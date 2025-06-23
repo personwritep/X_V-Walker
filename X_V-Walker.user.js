@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        X V-Walker
 // @namespace        http://tampermonkey.net/
-// @version        0.7
+// @version        0.8
 // @description        タイムライン上の動画・静止画の暗転拡大表示
 // @author        X User
 // @match        https://x.com/*
@@ -261,10 +261,22 @@ function set_img(target){
                         retry++;
                         if(retry>100){ // リトライ制限 100回 1secまで
                             clearInterval(interval); }
-                        img_s=document.querySelector('div[role="dialog"] img[src^="'+ img_id +'"]');
+                        if(width_check()){
+                            img_s=document.querySelector('[role="dialog"] img[src^="'+ img_id +'"]'); }
+                        else{
+                            img_s=document.querySelector('main img[src^="'+ img_id +'"]'); }
                         if(img_s){
                             clearInterval(interval);
-                            set_dialog(img_s); }}}}
+                            set_dialog(img_s); }}
+
+
+                    function width_check(){
+                        if(document.querySelector('.r-16xksha')){ // 幅720px以上でmainに設定される
+                            return true; }
+                        else{
+                            return false; }}
+
+                }} // if(link)
 
 
             function set_dialog(img){
@@ -403,7 +415,7 @@ function close_box(){
 
 
 function close_group(){
-    let close_sw=document.querySelector('#layers div[role="presentation"]');
+    let close_sw=document.querySelector('[role="presentation"] button[aria-label="閉じる"]');
     if(close_sw){
         close_sw.click(); }}
 
