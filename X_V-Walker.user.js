@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        X V-Walker
 // @namespace        http://tampermonkey.net/
-// @version        0.8
+// @version        0.9
 // @description        タイムライン上の動画・静止画の暗転拡大表示
 // @author        X User
 // @match        https://x.com/*
@@ -228,29 +228,23 @@ function trim(){
 
 
 
-function set_img(target){
+function set_img(target_elem){
     let lightbox=document.querySelector('#lightbox');
     let box_img=lightbox.querySelector('#box_img');
 
-    if(lightbox && box_img && target){
-        let img_src=target.getAttribute('src');
+    if(lightbox && box_img && target_elem){
+        let img_src=target_elem.getAttribute('src');
         if(img_src){
-            let link=target.closest('a');
-            if(link){
+            let link=target_elem.closest('a');
 
+            if(link){ // リンクが設定された画像
                 if(link.hasAttribute('target')){ // 外部リンクの場合
-                    disp_mode=1; // Lightbox表示 通常拡大
-                    box_img.src=img_src;
-                    html_.style.overflow='hidden';
-                    lightbox.style.visibility='visible';
-                    lightbox.classList.remove('fout');
-                    lightbox.classList.add('fin'); }
+                    set_dialog(target_elem); }
 
                 else{ // 投稿画像の場合
                     let img_id=img_src.split('?')[0];
                     if(link.href.includes('header_photo')){
                         img_id=img_id.replace('/600x200', ''); } // ヘッダー画像の場合
-
 
                     link.click(); // ダイアログ読込み遅延が必要
 
@@ -261,22 +255,14 @@ function set_img(target){
                         retry++;
                         if(retry>100){ // リトライ制限 100回 1secまで
                             clearInterval(interval); }
-                        if(width_check()){
-                            img_s=document.querySelector('[role="dialog"] img[src^="'+ img_id +'"]'); }
-                        else{
-                            img_s=document.querySelector('main img[src^="'+ img_id +'"]'); }
+                        img_s=document.querySelector('[role="dialog"] img[src^="'+ img_id +'"]');
                         if(img_s){
                             clearInterval(interval);
                             set_dialog(img_s); }}
-
-
-                    function width_check(){
-                        if(document.querySelector('.r-16xksha')){ // 幅720px以上でmainに設定される
-                            return true; }
-                        else{
-                            return false; }}
-
                 }} // if(link)
+
+            else{ // リンクが設定されていない画像
+                set_dialog(target_elem); } // デフォルトの暗転表示から Lightbox表示
 
 
             function set_dialog(img){
@@ -289,6 +275,7 @@ function set_img(target){
                 lightbox.classList.add('fin'); }
 
         } // if(img_src)
+
     } // if(lightbox && box_img && target)
 
 } // set_img()
